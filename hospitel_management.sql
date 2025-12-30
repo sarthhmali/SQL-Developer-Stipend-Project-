@@ -1,15 +1,15 @@
--- =========================================
+
 -- HOSPITAL MANAGEMENT SYSTEM
 -- PostgreSQL SQL Project
--- =========================================
+
 
 -- Drop tables if already exist (for re-run)
 DROP TABLE IF EXISTS prescriptions, medicines, payments, bills,
 admissions, rooms, appointments, doctors, departments, patients CASCADE;
 
--- =========================================
+
 -- 1. PATIENTS TABLE
--- =========================================
+
 CREATE TABLE patients (
     patient_id SERIAL PRIMARY KEY,
     first_name VARCHAR(50) NOT NULL,
@@ -22,17 +22,17 @@ CREATE TABLE patients (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- =========================================
+
 -- 2. DEPARTMENTS TABLE
--- =========================================
+
 CREATE TABLE departments (
     department_id SERIAL PRIMARY KEY,
     department_name VARCHAR(100) UNIQUE NOT NULL
 );
 
--- =========================================
+
 -- 3. DOCTORS TABLE
--- =========================================
+
 CREATE TABLE doctors (
     doctor_id SERIAL PRIMARY KEY,
     first_name VARCHAR(50),
@@ -43,9 +43,9 @@ CREATE TABLE doctors (
     experience_years INT CHECK (experience_years >= 0)
 );
 
--- =========================================
+
 -- 4. APPOINTMENTS TABLE
--- =========================================
+
 CREATE TABLE appointments (
     appointment_id SERIAL PRIMARY KEY,
     patient_id INT REFERENCES patients(patient_id),
@@ -56,9 +56,7 @@ CREATE TABLE appointments (
     CHECK (status IN ('Scheduled','Completed','Cancelled'))
 );
 
--- =========================================
 -- 5. ROOMS TABLE
--- =========================================
 CREATE TABLE rooms (
     room_id SERIAL PRIMARY KEY,
     room_type VARCHAR(50),
@@ -77,9 +75,9 @@ CREATE TABLE admissions (
     discharge_date DATE
 );
 
--- =========================================
+
 -- 7. BILLS TABLE
--- =========================================
+
 CREATE TABLE bills (
     bill_id SERIAL PRIMARY KEY,
     patient_id INT REFERENCES patients(patient_id),
@@ -88,9 +86,9 @@ CREATE TABLE bills (
     bill_date DATE DEFAULT CURRENT_DATE
 );
 
--- =========================================
+
 -- 8. PAYMENTS TABLE
--- =========================================
+
 CREATE TABLE payments (
     payment_id SERIAL PRIMARY KEY,
     bill_id INT REFERENCES bills(bill_id),
@@ -99,9 +97,9 @@ CREATE TABLE payments (
     amount_paid NUMERIC(10,2)
 );
 
--- =========================================
+
 -- 9. MEDICINES TABLE
--- =========================================
+
 CREATE TABLE medicines (
     medicine_id SERIAL PRIMARY KEY,
     medicine_name VARCHAR(100),
@@ -109,9 +107,9 @@ CREATE TABLE medicines (
     stock INT CHECK (stock >= 0)
 );
 
--- =========================================
+
 -- 10. PRESCRIPTIONS TABLE
--- =========================================
+
 CREATE TABLE prescriptions (
     prescription_id SERIAL PRIMARY KEY,
     patient_id INT REFERENCES patients(patient_id),
@@ -121,9 +119,8 @@ CREATE TABLE prescriptions (
     prescription_date DATE DEFAULT CURRENT_DATE
 );
 
--- =========================================
 -- SAMPLE DATA INSERTION
--- =========================================
+
 
 INSERT INTO departments (department_name)
 VALUES ('Cardiology'), ('Neurology'), ('Orthopedics');
@@ -146,30 +143,29 @@ VALUES
 ('Paracetamol',10,500),
 ('Amoxicillin',25,300);
 
--- =========================================
+
 -- APPOINTMENT ENTRY
--- =========================================
+
 INSERT INTO appointments (patient_id,doctor_id,appointment_date,appointment_time,status)
 VALUES (1,1,'2025-01-05','10:30','Scheduled');
 
--- =========================================
+
 -- ADMISSION ENTRY
--- =========================================
+
 INSERT INTO admissions (patient_id,room_id,admission_date)
 VALUES (1,1,'2025-01-05');
 
--- =========================================
+
 -- BILLING & PAYMENT
--- =========================================
+
 INSERT INTO bills (patient_id,admission_id,total_amount)
 VALUES (1,1,8000);
 
 INSERT INTO payments (bill_id,payment_date,payment_mode,amount_paid)
 VALUES (1,'2025-01-06','UPI',8000);
 
--- =========================================
 -- STORED PROCEDURE
--- =========================================
+
 CREATE OR REPLACE FUNCTION add_new_patient(
     fname VARCHAR,
     lname VARCHAR,
@@ -184,9 +180,9 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
--- =========================================
+
 -- TRIGGER TO UPDATE ROOM AVAILABILITY
--- =========================================
+
 CREATE OR REPLACE FUNCTION room_unavailable()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -201,18 +197,16 @@ CREATE TRIGGER room_assign_trigger
 AFTER INSERT ON admissions
 FOR EACH ROW
 EXECUTE FUNCTION room_unavailable();
-
--- =========================================
+=
 -- VIEWS
--- =========================================
 CREATE VIEW patient_billing_view AS
 SELECT p.first_name, p.last_name, b.total_amount, b.bill_date
 FROM bills b
 JOIN patients p ON b.patient_id = p.patient_id;
 
--- =========================================
+
 -- REPORTING QUERIES
--- =========================================
+
 
 -- Total Hospital Revenue
 SELECT SUM(amount_paid) AS total_revenue FROM payments;
