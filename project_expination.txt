@@ -1,0 +1,8 @@
+This project was developed as a stipend-based real-time SQL project.
+I was responsible for designing the complete database schema,
+writing SQL queries, optimizing performance using indexes,
+and implementing triggers and stored procedures.
+
+The database supports hospital operations such as:
+patient registration, doctor scheduling, room allocation,
+billing, payment tracking, and pharmacy inventory.
