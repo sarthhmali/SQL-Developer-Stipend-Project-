@@ -1,6 +1,32 @@
-
 -- HOSPITAL MANAGEMENT SYSTEM
 -- PostgreSQL SQL Project
+
+-- ============================================================
+-- PostgreSQL SQL Project
+-- Hospital Management System (Sample Database)
+--
+-- NOTE:
+-- This SQL file contains a SAMPLE version of the actual
+-- hospital database created during a stipend-based project.
+-- The schema structure, tables, relationships, and queries
+-- represent the real-world design, while the data included
+-- here is mock/sample data used for demonstration purposes.
+--
+-- The queries included in this project are designed to
+-- showcase important business and operational insights such as:
+-- - Total payments and hospital revenue
+-- - Patient billing information
+-- - Medicine stock availability
+-- - Currently admitted patients
+--
+-- These queries can be further used for:
+-- - Data analysis and reporting
+-- - Dashboard creation (Power BI / Excel / Tableau)
+-- - Business decision-making
+-- - Understanding hospital operational data which comes in data analayst field 
+--
+-- This project focuses on database design, data integrity,
+-- and analytical querying using PostgreSQL.
 
 
 -- Drop tables if already exist (for re-run)
@@ -64,9 +90,9 @@ CREATE TABLE rooms (
     availability BOOLEAN DEFAULT TRUE
 );
 
--- =========================================
+
 -- 6. ADMISSIONS TABLE
--- =========================================
+
 CREATE TABLE admissions (
     admission_id SERIAL PRIMARY KEY,
     patient_id INT REFERENCES patients(patient_id),
